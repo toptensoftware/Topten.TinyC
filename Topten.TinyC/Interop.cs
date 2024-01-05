@@ -52,7 +52,7 @@ public static partial class Interop
                 break;
 
             case Architecture.Arm64:
-                arch = "arm64";
+                arch = "aarch64";
                 break;
         }
 

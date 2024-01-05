@@ -6,8 +6,14 @@ if [ "$arch" == "x86_64" ]; then
     arch="x64"
 fi
 
-rm -rf ./tccbin/$platform/
-mkdir -p ./tccbin/$platform/
+
+if [ "$arch" == "unknown" ]; then
+    arch="$(uname -m)"
+fi
+
+
+rm -rf ./tccbin/$platform/$arch
+mkdir -p ./tccbin/$platform/$arch/
 mkdir -p ./tccbin/$platform/$arch/lib
 pushd tinycc
 make clean
