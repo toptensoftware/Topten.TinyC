@@ -57,7 +57,6 @@ public static partial class Interop
         }
 
         var libpath = Path.Combine(baseDir, os, arch, $"{prefix}{libname}{suffix}");
-        Console.WriteLine(libpath);
         
         if (File.Exists(libpath))
             return NativeLibrary.Load(libpath);
