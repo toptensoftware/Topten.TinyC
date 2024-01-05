@@ -85,7 +85,7 @@ public class Compiler : IDisposable
     /// </summary>
     /// <param name="symbol">The symbol to define</param>
     /// <param name="value">The symbol value</param>
-    public void Define(string symbol, string? value = null)
+    public void Define(string symbol, string value = null)
     {
         Interop.tcc_define_symbol(_state, symbol, value);
     }

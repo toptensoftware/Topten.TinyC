@@ -14,15 +14,27 @@ public static partial class Interop
 
     private static IntPtr ImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
     {
-        IntPtr libHandle = IntPtr.Zero;
-        string pathThis = System.IO.Path.GetDirectoryName(typeof(Interop).Assembly.Location);
+        // libtcc?
+        if (libraryName != libname)
+            return IntPtr.Zero;
 
-        if (libraryName == libname && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        // Get base directory
+        string baseDir = System.IO.Path.GetDirectoryName(typeof(Interop).Assembly.Location);
+
+        // Work out library location and name
+        string os = "";
+        var arch = Environment.Is64BitProcess ? "x64" : "x86";
+        string prefix = "";
+        string suffix = "";
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            var platform = Environment.Is64BitProcess ? "x64" : "x86";
-            var libpath = Path.Combine(pathThis, $"win32\\{platform}\\{libname}.dll");
-            return NativeLibrary.Load(libpath);
+            os = "win32";
+            suffix = ".dll";
         }
+
+        var libpath = Path.Combine(baseDir, $"{os}\\{arch}\\{prefix}{libname}{suffix}");
+        if (File.Exists(libpath))
+            return NativeLibrary.Load(libpath);
         return IntPtr.Zero;
     }
 
@@ -58,7 +70,7 @@ public static partial class Interop
     public static extern int tcc_add_sysinclude_path(IntPtr s, [MarshalAs(UnmanagedType.LPStr)] string pathname);
 
     [DllImport(libname)]
-    public static extern void tcc_define_symbol(IntPtr s, [MarshalAs(UnmanagedType.LPStr)] string sym, [MarshalAs(UnmanagedType.LPStr)] string? value);
+    public static extern void tcc_define_symbol(IntPtr s, [MarshalAs(UnmanagedType.LPStr)] string sym, [MarshalAs(UnmanagedType.LPStr)] string value);
 
     [DllImport(libname)]
     public static extern void tcc_undefine_symbol(IntPtr s, [MarshalAs(UnmanagedType.LPStr)] string sym);
