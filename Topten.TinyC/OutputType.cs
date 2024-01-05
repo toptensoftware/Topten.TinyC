@@ -1,4 +1,4 @@
-﻿namespace tcc.net;
+﻿namespace Topten.TinyC;
 
 public enum OutputType
 {

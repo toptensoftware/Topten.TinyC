@@ -1,10 +1,31 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Reflection;
+using System.Runtime.InteropServices;
 
-namespace tcc.net;
+namespace Topten.TinyC;
 
 public static partial class Interop
 {
     const string libname = "libtcc";
+
+    static Interop()
+    {
+        NativeLibrary.SetDllImportResolver(typeof(Interop).Assembly, ImportResolver);
+    }
+
+    private static IntPtr ImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+    {
+        IntPtr libHandle = IntPtr.Zero;
+        string pathThis = System.IO.Path.GetDirectoryName(typeof(Interop).Assembly.Location);
+
+        if (libraryName == libname && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            var platform = Environment.Is64BitProcess ? "x64" : "x86";
+            var libpath = Path.Combine(pathThis, $"win32\\{platform}\\{libname}.dll");
+            return NativeLibrary.Load(libpath);
+        }
+        return IntPtr.Zero;
+    }
+
 
     [DllImport(libname)]
     public static extern IntPtr tcc_new();

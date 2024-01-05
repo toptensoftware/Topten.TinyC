@@ -1,37 +1,25 @@
 ﻿using System.Runtime.InteropServices;
-using tcc.net;
+using Topten.TinyC;
 
 using var c = new Compiler();
 c.OutputType = OutputType.Memory;
-c.SetLibPath(@"C:\Users\Brad\Projects\tcc\tinycc\win32");
 c.Define("DELTA", "100");
 c.Compile(@"
 
-#include <setjmp.h>
 #include <stdio.h>
-
-jmp_buf jb;
 
 void callback(int value);
 
 void other()
 {
     printf(""o1\n"");
-    longjmp(jb, 1);
     printf(""o2\n"");
 }
 
 // This is C code
 int add(int x, int y) 
 {  
-    printf(""a1\n"");
-    if (setjmp(jb) == 0)
-    {
-        printf(""a2\n"");
-        other();
-        printf(""a3\n"");
-    }
-    printf(""a4\n"");
+    printf(""sizeof(void*) = %i\n"", sizeof(void*));
     return x + y + DELTA; 
 } 
 

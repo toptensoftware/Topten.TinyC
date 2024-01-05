@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\tcc.net\tcc.net.csproj" />
+    <ProjectReference Include="..\Topten.TinyC\Topten.TinyC.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace tcc.net;
+namespace Topten.TinyC;
 
 /// <summary>
 /// TCC Compiler object
@@ -24,12 +24,12 @@ public class Compiler : IDisposable
     /// Set compile options as per command line args
     /// </summary>
     /// <param name="str">The command line options to set</param>
-    /// <exception cref="TCCException">Exception if failed</exception>
+    /// <exception cref="TinyCException">Exception if failed</exception>
     public void SetOptions(string str)
     {
         int err = Interop.tcc_set_options(_state, str);
         if (err != 0)
-            throw new TCCException($"Failed to set options {err}", err);
+            throw new TinyCException($"Failed to set options {err}", err);
     }
 
     /// <summary>
@@ -112,7 +112,7 @@ public class Compiler : IDisposable
     /// Add a C, dll, object, library or ld script file
     /// </summary>
     /// <param name="filename">The file to add</param>
-    /// <exception cref="TCCException">Exception if failed</exception>
+    /// <exception cref="TinyCException">Exception if failed</exception>
     public void AddFile(string filename)
     {
         init_compile();
@@ -120,14 +120,14 @@ public class Compiler : IDisposable
         // Add file
         int err = Interop.tcc_add_file(_state, filename);
         if (err != 0)
-            throw new TCCException($"Adding file failed with code {err}", err);
+            throw new TinyCException($"Adding file failed with code {err}", err);
     }
 
     /// <summary>
     /// Compile C Code froma string
     /// </summary>
     /// <param name="code">The code to compile</param>
-    /// <exception cref="TCCException">Exception if failed</exception>
+    /// <exception cref="TinyCException">Exception if failed</exception>
     public void Compile(string code)
     {
         init_compile();
@@ -135,20 +135,20 @@ public class Compiler : IDisposable
         // Compile string
         int err = Interop.tcc_compile_string(_state, code);
         if (err != 0)
-            throw new TCCException($"Compilation failed with code {err}", err);
+            throw new TinyCException($"Compilation failed with code {err}", err);
     }
 
     /// <summary>
     /// Add a library search path
     /// </summary>
     /// <param name="pathname">The path</param>
-    /// <exception cref="TCCException">Exception if failed</exception>
+    /// <exception cref="TinyCException">Exception if failed</exception>
     public void AddLibraryPath(string pathname)
     {
         // Add file
         int err = Interop.tcc_add_library_path(_state, pathname);
         if (err != 0)
-            throw new TCCException($"Adding library path failed with code {err}", err);
+            throw new TinyCException($"Adding library path failed with code {err}", err);
     }
 
 
@@ -156,20 +156,20 @@ public class Compiler : IDisposable
     /// Add a library
     /// </summary>
     /// <param name="libname">The library name</param>
-    /// <exception cref="TCCException">Exception if failed</exception>
+    /// <exception cref="TinyCException">Exception if failed</exception>
     public void AddLibrary(string libname)
     {
         // Add file
         int err = Interop.tcc_add_library(_state, libname);
         if (err != 0)
-            throw new TCCException($"Adding library failed with code {err}", err);
+            throw new TinyCException($"Adding library failed with code {err}", err);
     }
 
     /// <summary>
     /// Write an output file
     /// </summary>
     /// <param name="filename">The file to write</param>
-    /// <exception cref="TCCException">Exception if failed</exception>
+    /// <exception cref="TinyCException">Exception if failed</exception>
     public void OutputFile(string filename)
     {
         // Check output type is "Memory"
@@ -181,13 +181,13 @@ public class Compiler : IDisposable
         // Add file
         int err = Interop.tcc_output_file(_state, filename);
         if (err != 0)
-            throw new TCCException($"Outputing file failed with code {err}", err);
+            throw new TinyCException($"Outputing file failed with code {err}", err);
     }
 
     /// <summary>
     /// Relocate the compiled module in memory
     /// </summary>
-    /// <exception cref="TCCException">Exception if failed</exception>
+    /// <exception cref="TinyCException">Exception if failed</exception>
     public void Relocate()
     {
         // Check output type is "Memory"
@@ -205,7 +205,7 @@ public class Compiler : IDisposable
         // Do it
         int err = Interop.tcc_relocate(_state, (IntPtr)1);
         if (err != 0)
-            throw new TCCException($"Relocation failed with code {err}", err);
+            throw new TinyCException($"Relocation failed with code {err}", err);
     }
 
     [DllImport("kernel32.dll")]
@@ -227,12 +227,12 @@ public class Compiler : IDisposable
     /// </summary>
     /// <param name="name">Name of the symbol</param>
     /// <param name="value">The symbol's value</param>
-    /// <exception cref="TCCException">Exception is failed</exception>
+    /// <exception cref="TinyCException">Exception is failed</exception>
     public void AddSymbol(string name, IntPtr value)
     {
         int err = Interop.tcc_add_symbol(_state, name, value);
         if (err != 0)
-            throw new TCCException($"Failed to add symbol with code {err}", err);
+            throw new TinyCException($"Failed to add symbol with code {err}", err);
     }
 
     /// <summary>
@@ -240,12 +240,12 @@ public class Compiler : IDisposable
     /// </summary>
     /// <param name="name">Name of the symbol</param>
     /// <param name="value">The symbol's value</param>
-    /// <exception cref="TCCException">Exception is failed</exception>
+    /// <exception cref="TinyCException">Exception is failed</exception>
     public void AddSymbol(string name, Delegate value)
     {
         int err = Interop.tcc_add_symbol(_state, name, value);
         if (err != 0)
-            throw new TCCException($"Failed to add symbol with code {err}", err);
+            throw new TinyCException($"Failed to add symbol with code {err}", err);
     }
 
     /// <summary>
