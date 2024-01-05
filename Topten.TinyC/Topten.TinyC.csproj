@@ -7,7 +7,7 @@
   </PropertyGroup>
 
     <ItemGroup>
-        <None Include="$(SolutionDir)tccbin\\**" CopyToOutputDirectory="PreserveNewest" />
+        <None Include="..\\tccbin\\**" CopyToOutputDirectory="Always" />
     </ItemGroup>
 
 </Project>

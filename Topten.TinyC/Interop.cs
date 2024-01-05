@@ -23,7 +23,6 @@ public static partial class Interop
 
         // Work out library location and name
         string os = "";
-        var arch = Environment.Is64BitProcess ? "x64" : "x86";
         string prefix = "";
         string suffix = "";
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -31,8 +30,35 @@ public static partial class Interop
             os = "win32";
             suffix = ".dll";
         }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            os = "Linux";
+            suffix = ".so";
+        }
 
-        var libpath = Path.Combine(baseDir, $"{os}\\{arch}\\{prefix}{libname}{suffix}");
+        string arch = "";
+        switch (RuntimeInformation.OSArchitecture)
+        {
+            case Architecture.X64:
+                arch = "x64";
+                break;
+
+            case Architecture.X86:
+                arch = "x86";
+                break;
+
+            case Architecture.Arm:
+                arch = "arm";
+                break;
+
+            case Architecture.Arm64:
+                arch = "arm64";
+                break;
+        }
+
+        var libpath = Path.Combine(baseDir, os, arch, $"{prefix}{libname}{suffix}");
+        Console.WriteLine(libpath);
+        
         if (File.Exists(libpath))
             return NativeLibrary.Load(libpath);
         return IntPtr.Zero;
