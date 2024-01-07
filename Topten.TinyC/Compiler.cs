@@ -188,39 +188,34 @@ public class Compiler : IDisposable
     /// Relocate the compiled module in memory
     /// </summary>
     /// <exception cref="TinyCException">Exception if failed</exception>
-    public void Relocate()
+    public Module Relocate()
     {
         // Check output type is "Memory"
         if (_outputType != OutputType.Memory)
             throw new InvalidOperationException("Relocate can only be used with OutputType.Memory");
 
         // Allocate memory
-        /*
         int size = Interop.tcc_relocate(_state, IntPtr.Zero);
         IntPtr mem = Marshal.AllocHGlobal(size);
-        Interop.tcc_relocate(_state, mem);
-        VirtualProtect(mem, (UIntPtr)size, 0x20, out var old);
-        */
 
-        // Do it
-        int err = Interop.tcc_relocate(_state, (IntPtr)1);
+        // Relocate
+        int err = Interop.tcc_relocate(_state, mem);
         if (err != 0)
+        {
+            Marshal.FreeHGlobal(mem);
             throw new TinyCException($"Relocation failed with code {err}", err);
-    }
+        }
 
-    [DllImport("kernel32.dll")]
-    static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
-
-    public IEnumerable<Symbol> ListSymbols()
-    {
-        var list = new List<Symbol>();
+        // Build a dictionary of symbols
+        var dict = new Dictionary<string, IntPtr>();
         Interop.tcc_list_symbols(_state, IntPtr.Zero, (ctx, sym, val) =>
         {
-            list.Add(new Symbol(sym, val));
+            dict.Add(sym, val);
         });
-        return list;
-    }
 
+        // Get all symbols
+        return new Module(mem, dict);
+    }
 
     /// <summary>
     /// Add a symbol
@@ -253,10 +248,12 @@ public class Compiler : IDisposable
     /// </summary>
     /// <param name="name">The symbol name</param>
     /// <returns>The symbol value</returns>
+    /*
     public IntPtr GetSymbol(string name)
     {
         return Interop.tcc_get_symbol(_state, name);
     }
+    */
 
     // Callback from TCC on error
     void _on_error(IntPtr opaque, string message)
