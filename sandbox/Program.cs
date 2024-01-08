@@ -38,18 +38,18 @@ del_callback cb = callback;
 c.AddSymbol("callback", Marshal.GetFunctionPointerForDelegate(cb));
 
 // Link
-c.Relocate();
+var m = c.Relocate();
 
 // List all symbols
 Console.WriteLine("\nSymbols:");
-foreach (var s in c.ListSymbols())
+foreach (var s in m.Symbols)
 {
-    Console.WriteLine($" {s.Value:X} {s.Name}");
+    Console.WriteLine($" {s.Value:X} {s.Key}");
 }
 Console.WriteLine();
 
 // Call it
-var code = c.GetSymbol("add");
+var code = m.Symbols["main"];
 var c_add = Marshal.GetDelegateForFunctionPointer<del_add>(code);
 Console.WriteLine($"Hello TCC = {c_add(10, 13)}!");
 
