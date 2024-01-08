@@ -196,6 +196,8 @@ public class Compiler : IDisposable
 
         // Allocate memory
         int size = Interop.tcc_relocate(_state, IntPtr.Zero);
+        if (size < 0)
+            throw new TinyCException("Failed to relocate", -1);
         IntPtr mem = Marshal.AllocHGlobal(size);
 
         // Relocate

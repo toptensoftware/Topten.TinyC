@@ -21,6 +21,15 @@ public static partial class Interop
         // Get base directory
         string baseDir = System.IO.Path.GetDirectoryName(typeof(Interop).Assembly.Location);
 
+        var libpath = Path.Combine(baseDir, FormatNativeLibraryPath(libraryName));
+        
+        if (File.Exists(libpath))
+            return NativeLibrary.Load(libpath);
+        return IntPtr.Zero;
+    }
+
+    public static string FormatNativeLibraryPath(string libname)
+    {
         // Work out library location and name
         string os = "";
         string prefix = "";
@@ -56,11 +65,7 @@ public static partial class Interop
                 break;
         }
 
-        var libpath = Path.Combine(baseDir, os, arch, $"{prefix}{libname}{suffix}");
-        
-        if (File.Exists(libpath))
-            return NativeLibrary.Load(libpath);
-        return IntPtr.Zero;
+        return Path.Combine(os, arch, $"{prefix}{libname}{suffix}");
     }
 
 
