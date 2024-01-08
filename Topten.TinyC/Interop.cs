@@ -19,10 +19,11 @@ public static partial class Interop
             return IntPtr.Zero;
 
         // Get base directory
-        string baseDir = System.IO.Path.GetDirectoryName(typeof(Interop).Assembly.Location);
+        string baseDir = Path.GetDirectoryName(typeof(Interop).Assembly.Location);
 
         var libpath = Path.Combine(baseDir, FormatNativeLibraryPath(libraryName));
-        
+
+
         if (File.Exists(libpath))
             return NativeLibrary.Load(libpath);
         return IntPtr.Zero;

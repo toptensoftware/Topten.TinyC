@@ -104,6 +104,9 @@ public class Compiler : IDisposable
         // Setup output type
         if (OutputType == OutputType.Unknown)
             throw new InvalidOperationException("Output type must be set before compilation");
+        if (_outputTypeLocked)
+            return;
+
         Interop.tcc_set_output_type(_state, OutputType);
         _outputTypeLocked = true;
     }
