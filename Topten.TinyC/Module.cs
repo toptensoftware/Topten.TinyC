@@ -19,6 +19,13 @@ namespace Topten.TinyC
 
         public IDictionary<string, IntPtr> Symbols { get; }
 
+        public IntPtr Detach()
+        {
+            IntPtr c = _code;
+            _code = IntPtr.Zero;
+            return c;
+        }
+
         #region Dispose Pattern
         private bool isDisposed;
         protected virtual void Dispose(bool disposing)
@@ -29,7 +36,8 @@ namespace Topten.TinyC
                 {
                 }
 
-                Marshal.FreeHGlobal(_code);
+                if (_code != IntPtr.Zero)
+                    Marshal.FreeHGlobal(_code);
                 isDisposed = true;
             }
         }

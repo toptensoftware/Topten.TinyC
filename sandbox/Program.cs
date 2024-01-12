@@ -48,10 +48,14 @@ foreach (var s in m.Symbols)
 }
 Console.WriteLine();
 
+var sw = new StringWriter();
+Console.SetOut(sw);
+
 // Call it
-var code = m.Symbols["main"];
+var code = m.Symbols["add"];
 var c_add = Marshal.GetDelegateForFunctionPointer<del_add>(code);
 Console.WriteLine($"Hello TCC = {c_add(10, 13)}!");
+
 
 // Delegate types
 delegate int del_add(int a, int b);
