@@ -109,6 +109,8 @@ public static partial class Interop
     [DllImport(libname)]
     public static extern void tcc_set_lib_path(IntPtr s, [MarshalAs(UnmanagedType.LPStr)] string path);
 
+    public static IntPtr TCC_RELOCATE_AUTO = (IntPtr)1;
+
     [DllImport(libname)]
     public static extern int tcc_relocate(IntPtr s, IntPtr ptr);
 
